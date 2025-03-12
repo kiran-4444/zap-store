@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"slices"
@@ -60,28 +61,21 @@ func NewKVStore() *KVStore {
 	}
 }
 
-func main() {
-	kvs := NewKVStore()
-
+func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 	for {
-		fmt.Print("> ")
-		reader := bufio.NewReader(os.Stdin)
+		fmt.Fprint(out, "> ")
 		line, err := reader.ReadString('\n')
+
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Trim the newline character
 		line = line[:len(line)-1]
 
-		if err != nil {
-			fmt.Println("Error:", err)
-			continue
-		}
-
 		if line == "exit" {
-			fmt.Println("Exiting...")
-			break
+			fmt.Fprintln(out, "Exiting...")
+			return nil
 		}
 
 		words := strings.Split(line, " ")
@@ -92,7 +86,7 @@ func main() {
 
 		if len(words) == 3 {
 			if words[0] != "set" {
-				fmt.Println("Invalid command: ", words[0])
+				fmt.Fprintln(out, "Invalid command: ", words[0])
 				continue
 			}
 
@@ -100,7 +94,7 @@ func main() {
 			value := words[2]
 			var err = kvs.Set(key, value)
 			if err != nil {
-				fmt.Println(err)
+				fmt.Fprintln(out, err)
 				continue
 			}
 
@@ -111,16 +105,16 @@ func main() {
 				key := words[1]
 				value, err := kvs.Get(key)
 				if err != nil {
-					fmt.Println(err)
+					fmt.Fprintln(out, err)
 					continue
 				}
-
-				fmt.Println(value)
+				fmt.Fprintln(out, value)
 			} else if words[0] == "del" {
 				key := words[1]
 				kvs.Del(key)
+				fmt.Fprintln(out, "Deleted ", key)
 			} else {
-				fmt.Println("Invalid command: ", words[0])
+				fmt.Fprintln(out, "Invalid command: ", words[0])
 				continue
 			}
 
@@ -128,11 +122,22 @@ func main() {
 
 		if len(words) == 1 {
 			if words[0] == "getall" {
-				fmt.Println(kvs.GetAll())
+				fmt.Fprintln(out, kvs.GetAll())
 			} else {
-				fmt.Println("Invalid command: ", words[0])
+				fmt.Fprintln(out, "Invalid command: ", words[0])
 				continue
 			}
 		}
+
 	}
+}
+
+func main() {
+	kvs := NewKVStore()
+
+	reader := bufio.NewReader(os.Stdin)
+	if err := runLoop(kvs, reader, os.Stdout); err != nil {
+		log.Fatal(err)
+	}
+
 }
