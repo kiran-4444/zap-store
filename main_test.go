@@ -21,9 +21,19 @@ func TestKVStoreSet(t *testing.T) {
 			kvs := NewKVStore()
 			err := kvs.Set(tt.key, tt.value)
 
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
-				return
+			// Error occured when it shouldn't
+			if err != nil {
+				if tt.wantErr == false {
+					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
+					return
+				}
+			}
+			// No error occured when it should
+			if err == nil {
+				if tt.wantErr == true {
+					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
+					return
+				}
 			}
 
 			if tt.wantErr {
@@ -60,9 +70,19 @@ func TestKVStoreGet(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := kvs.Get(tt.key)
 
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
-				return
+			// Error occured when it shouldn't
+			if err != nil {
+				if tt.wantErr == false {
+					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
+					return
+				}
+			}
+			// No error occured when it should
+			if err == nil {
+				if tt.wantErr == true {
+					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
+					return
+				}
 			}
 
 			if tt.wantErr {
@@ -97,7 +117,7 @@ func TestKVStoreGetAll(t *testing.T) {
 	kvs.hashMap["foo"] = "bar"
 	kvs.hashMap["baz"] = "qux"
 
-	if got := kvs.GetAll(); got != "foo:bar\nbaz:qux\n" {
+	if got := kvs.GetAll(); got != "baz:qux\nfoo:bar\n" {
 		t.Errorf("GetAll() = %v, want %v", got, "foo:bar\nbaz:qux\n")
 		return
 	}

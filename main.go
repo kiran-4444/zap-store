@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -39,9 +40,17 @@ func (kvs *KVStore) Del(key string) {
 
 func (kvs *KVStore) GetAll() string {
 	var result string
-	for key, value := range kvs.hashMap {
-		result += fmt.Sprintf("%s:%s\n", key, value)
+	var sortedKeys []string
+	for key := range kvs.hashMap {
+		sortedKeys = append(sortedKeys, key)
 	}
+
+	slices.Sort(sortedKeys)
+
+	for _, key := range sortedKeys {
+		result += fmt.Sprintf("%s:%s\n", key, kvs.hashMap[key])
+	}
+
 	return result
 }
 
