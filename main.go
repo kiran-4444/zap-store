@@ -84,10 +84,6 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 
 		words := strings.Split(line, " ")
 
-		if len(words) == 0 {
-			continue
-		}
-
 		if len(words) == 3 {
 			if words[0] != "set" {
 				fmt.Fprintf(out, "Invalid command: %s\n", words[0])
