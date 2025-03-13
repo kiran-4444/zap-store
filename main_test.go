@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"bufio"
+	"bytes"
+	"strings"
+	"testing"
+)
 
 func TestKVStoreSet(t *testing.T) {
 	tests := []struct {
@@ -122,4 +127,87 @@ func TestKVStoreGetAll(t *testing.T) {
 		return
 	}
 
+}
+
+func TestRunLoop(t *testing.T) {
+	tests := []struct {
+		name       string
+		input      string            // Simulated user input with \n
+		wantOutput string            // Expected output to out
+		wantMap    map[string]string // Expected KVStore state
+		wantErr    bool              // Expect an error?
+	}{
+		{
+			name:       "set_and_get",
+			input:      "set foo bar\nget foo\nexit\n",
+			wantOutput: "> > bar\n> Exiting...\n",
+			wantMap:    map[string]string{"foo": "bar"},
+			wantErr:    false,
+		},
+		{
+			name:       "delete_key",
+			input:      "set foo bar\ndel foo\nget foo\nexit\n",
+			wantOutput: "> > Deleted foo\n> KEY NOT FOUND\n> Exiting...\n",
+			wantMap:    map[string]string{},
+			wantErr:    false,
+		},
+		{
+			name:       "getall_sorted",
+			input:      "set baz qux\nset foo bar\ngetall\nexit\n",
+			wantOutput: "> > > baz:qux\nfoo:bar\n> Exiting...\n",
+			wantMap:    map[string]string{"baz": "qux", "foo": "bar"},
+			wantErr:    false,
+		},
+		{
+			name:       "invalid_command",
+			input:      "bad cmd\nexit\n",
+			wantOutput: "> Invalid command: bad\n> Exiting...\n",
+			wantMap:    map[string]string{},
+			wantErr:    false,
+		},
+		{
+			name:       "set_empty_key",
+			input:      "set  val\nexit\n",
+			wantOutput: "> KEY CANNOT BE EMPTY\n> Exiting...\n",
+			wantMap:    map[string]string{},
+			wantErr:    false,
+		},
+		// TODO: Add more cases (e.g., empty input, EOF error)
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Setup
+			kvs := NewKVStore()
+			reader := bufio.NewReader(strings.NewReader(tt.input))
+			var buf bytes.Buffer
+
+			// Run
+			err := runLoop(kvs, reader, &buf)
+
+			// Check error
+			if (err != nil) != tt.wantErr {
+				t.Errorf("runLoop() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			// Check output
+			if got := buf.String(); got != tt.wantOutput {
+				t.Errorf("runLoop() output = %q, want %q", got, tt.wantOutput)
+			}
+
+			// Check KVStore state
+			for key, wantVal := range tt.wantMap {
+				if got, err := kvs.Get(key); err != nil || got != wantVal {
+					t.Errorf("kvs.Get(%q) = %q, err = %v; want %q, nil", key, got, err, wantVal)
+				}
+			}
+			// Verify missing keys
+			for key := range kvs.hashMap {
+				if _, ok := tt.wantMap[key]; !ok {
+					t.Errorf("Unexpected key %q in hashMap", key)
+				}
+			}
+		})
+	}
 }

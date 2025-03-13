@@ -74,7 +74,7 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 		line = line[:len(line)-1]
 
 		if line == "exit" {
-			fmt.Fprintln(out, "Exiting...")
+			fmt.Fprintf(out, "Exiting...\n")
 			return nil
 		}
 
@@ -86,7 +86,7 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 
 		if len(words) == 3 {
 			if words[0] != "set" {
-				fmt.Fprintln(out, "Invalid command: ", words[0])
+				fmt.Fprintf(out, "Invalid command: %s\n", words[0])
 				continue
 			}
 
@@ -112,9 +112,9 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 			} else if words[0] == "del" {
 				key := words[1]
 				kvs.Del(key)
-				fmt.Fprintln(out, "Deleted ", key)
+				fmt.Fprintf(out, "Deleted %s\n", key)
 			} else {
-				fmt.Fprintln(out, "Invalid command: ", words[0])
+				fmt.Fprintf(out, "Invalid command: %s\n", words[0])
 				continue
 			}
 
@@ -122,9 +122,9 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 
 		if len(words) == 1 {
 			if words[0] == "getall" {
-				fmt.Fprintln(out, kvs.GetAll())
+				fmt.Fprintf(out, "%s", kvs.GetAll())
 			} else {
-				fmt.Fprintln(out, "Invalid command: ", words[0])
+				fmt.Fprintf(out, "Invalid command: %s\n", words[0])
 				continue
 			}
 		}
