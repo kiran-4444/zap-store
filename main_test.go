@@ -173,6 +173,20 @@ func TestRunLoop(t *testing.T) {
 			wantErr:    false,
 		},
 		{
+			name:       "io_error",
+			input:      "set foo bar",
+			wantOutput: "> ",
+			wantMap:    map[string]string{},
+			wantErr:    true,
+		},
+		{
+			name:       "empty_input",
+			input:      "\nset foo bar\nexit\n",
+			wantOutput: "> > > Exiting...\n",
+			wantMap:    map[string]string{"foo": "bar"},
+			wantErr:    false,
+		},
+		{
 			name:       "invalid_set",
 			input:      "a b c\nexit\n",
 			wantOutput: "> Invalid command: a\n> Exiting...\n",
@@ -186,7 +200,6 @@ func TestRunLoop(t *testing.T) {
 			wantMap:    map[string]string{},
 			wantErr:    false,
 		},
-		// TODO: Add more cases (e.g., empty input, EOF error)
 	}
 
 	for _, tt := range tests {

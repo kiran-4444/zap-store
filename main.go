@@ -78,6 +78,10 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 			return nil
 		}
 
+		if line == "" {
+			continue
+		}
+
 		words := strings.Split(line, " ")
 
 		if len(words) == 0 {
