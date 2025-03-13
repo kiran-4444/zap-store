@@ -166,6 +166,20 @@ func TestRunLoop(t *testing.T) {
 			wantErr:    false,
 		},
 		{
+			name:       "invalid_command_getall",
+			input:      "getallinvalid\nexit\n",
+			wantOutput: "> Invalid command: getallinvalid\n> Exiting...\n",
+			wantMap:    map[string]string{},
+			wantErr:    false,
+		},
+		{
+			name:       "invalid_set",
+			input:      "a b c\nexit\n",
+			wantOutput: "> Invalid command: a\n> Exiting...\n",
+			wantMap:    map[string]string{},
+			wantErr:    false,
+		},
+		{
 			name:       "set_empty_key",
 			input:      "set  val\nexit\n",
 			wantOutput: "> KEY CANNOT BE EMPTY\n> Exiting...\n",
