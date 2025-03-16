@@ -6,62 +6,12 @@ import (
 	"io"
 	"log"
 	"os"
-	"slices"
 	"strings"
+
+	"kv-store/internal/kvstore"
 )
 
-type KVStore struct {
-	hashMap map[string]string
-}
-
-func (kvs *KVStore) Set(key string, value string) error {
-	if key == "" {
-		return fmt.Errorf("KEY CANNOT BE EMPTY")
-	}
-
-	if value == "" {
-		return fmt.Errorf("VALUE CANNOT BE EMPTY")
-	}
-
-	kvs.hashMap[key] = value
-	return nil
-}
-
-func (kvs *KVStore) Get(key string) (string, error) {
-	if _, ok := kvs.hashMap[key]; !ok {
-		return "", fmt.Errorf("KEY NOT FOUND")
-	}
-
-	return kvs.hashMap[key], nil
-}
-
-func (kvs *KVStore) Del(key string) {
-	delete(kvs.hashMap, key)
-}
-
-func (kvs *KVStore) GetAll() string {
-	var result string
-	var sortedKeys []string
-	for key := range kvs.hashMap {
-		sortedKeys = append(sortedKeys, key)
-	}
-
-	slices.Sort(sortedKeys)
-
-	for _, key := range sortedKeys {
-		result += fmt.Sprintf("%s:%s\n", key, kvs.hashMap[key])
-	}
-
-	return result
-}
-
-func NewKVStore() *KVStore {
-	return &KVStore{
-		hashMap: make(map[string]string),
-	}
-}
-
-func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
+func runLoop(kvs *kvstore.KVStore, reader *bufio.Reader, out io.Writer) error {
 	for {
 		fmt.Fprint(out, "> ")
 		line, err := reader.ReadString('\n')
@@ -92,15 +42,14 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 
 			key := words[1]
 			value := words[2]
+
 			var err = kvs.Set(key, value)
 			if err != nil {
 				fmt.Fprintln(out, err)
 				continue
 			}
 
-		}
-
-		if len(words) == 2 {
+		} else if len(words) == 2 {
 			if words[0] == "get" {
 				key := words[1]
 				value, err := kvs.Get(key)
@@ -118,22 +67,15 @@ func runLoop(kvs *KVStore, reader *bufio.Reader, out io.Writer) error {
 				continue
 			}
 
+		} else {
+			fmt.Fprintf(out, "Invalid command: %s\n", line)
+			continue
 		}
-
-		if len(words) == 1 {
-			if words[0] == "getall" {
-				fmt.Fprintf(out, "%s", kvs.GetAll())
-			} else {
-				fmt.Fprintf(out, "Invalid command: %s\n", words[0])
-				continue
-			}
-		}
-
 	}
 }
 
 func main() {
-	kvs := NewKVStore()
+	kvs := kvstore.NewKVStore()
 
 	reader := bufio.NewReader(os.Stdin)
 	if err := runLoop(kvs, reader, os.Stdout); err != nil {
