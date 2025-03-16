@@ -1,20 +1,31 @@
 package inmem
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type InMemStorageEngine struct {
 	hashMap map[string]string
+	lock    sync.Mutex
 }
 
 func (kvs *InMemStorageEngine) Set(key string, value string) error {
 	if key == "" {
 		return fmt.Errorf("Key cannot be empty")
 	}
+
+	kvs.lock.Lock()
+	defer kvs.lock.Unlock()
+
 	kvs.hashMap[key] = value
 	return nil
 }
 
 func (kvs *InMemStorageEngine) Get(key string) (string, error) {
+	kvs.lock.Lock()
+	defer kvs.lock.Unlock()
+
 	if _, ok := kvs.hashMap[key]; !ok {
 		return "", fmt.Errorf("Key not found")
 	}
@@ -22,6 +33,9 @@ func (kvs *InMemStorageEngine) Get(key string) (string, error) {
 }
 
 func (kvs *InMemStorageEngine) Del(key string) error {
+	kvs.lock.Lock()
+	defer kvs.lock.Unlock()
+
 	delete(kvs.hashMap, key)
 	return nil
 }

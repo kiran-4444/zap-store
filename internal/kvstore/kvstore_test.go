@@ -1,7 +1,10 @@
 package kvstore
 
 import (
+	"fmt"
 	"kv-store/internal/storage/inmem"
+	"math/rand"
+	"strings"
 	"testing"
 )
 
@@ -115,4 +118,152 @@ func TestKVStoreDel(t *testing.T) {
 	if got, _ := kvs.Get("foo"); got != "" {
 		t.Errorf("Del() = %v, want %v", got, false)
 	}
+}
+
+// preKeys generates a slice of pre-allocated keys to reduce allocations during benchmarks.
+func preKeys(count int) []string {
+	keys := make([]string, count)
+	for i := 0; i < count; i++ {
+		keys[i] = fmt.Sprintf("key%d", i)
+	}
+	return keys
+}
+
+func BenchmarkKVStoreInMemSet(b *testing.B) {
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
+
+	// Pre-generate 1000 keys to avoid allocations during the loop
+	keys := preKeys(1000)
+	value := "value" // Fixed value to avoid allocations
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		// Cycle through pre-generated keys
+		key := keys[i%1000]
+		if err := kvs.Set(key, value); err != nil {
+			b.Fatalf("Set failed: %v", err)
+		}
+	}
+}
+
+func BenchmarkKVStoreInMemGet(b *testing.B) {
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
+
+	// Pre-populate with one key-value pair for consistent Get
+	if err := kvs.Set("key", "value"); err != nil {
+		b.Fatalf("Set failed: %v", err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if _, err := kvs.Get("key"); err != nil {
+			b.Fatalf("Get failed: %v", err)
+		}
+	}
+}
+
+func BenchmarkKVStoreInMemDel(b *testing.B) {
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
+
+	// Pre-populate with 1000 keys to ensure we can delete them
+	keys := preKeys(1000)
+	for _, key := range keys {
+		if err := kvs.Set(key, "value"); err != nil {
+			b.Fatalf("Set failed: %v", err)
+		}
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		// Cycle through keys to delete
+		key := keys[i%1000]
+		if err := kvs.Del(key); err != nil {
+			b.Fatalf("Del failed: %v", err)
+		}
+		// Re-insert to avoid running out of keys
+		if err := kvs.Set(key, "value"); err != nil {
+			b.Fatalf("Set failed: %v", err)
+		}
+	}
+}
+
+func BenchmarkKVStoreInMemMixed(b *testing.B) {
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
+
+	// Pre-populate with 10,000 keys to simulate a realistic dataset
+	keys := preKeys(10000)
+	for _, key := range keys {
+		if err := kvs.Set(key, "value"); err != nil {
+			b.Fatalf("Set failed: %v", err)
+		}
+	}
+
+	// Mixed workload: 50% Get, 40% Set, 10% Del
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		r := rand.Float64() // Random number between 0 and 1
+		key := keys[i%10000]
+		switch {
+		case r < 0.5: // 50% Get
+			if _, err := kvs.Get(key); err != nil {
+				b.Fatalf("Get failed: %v", err)
+			}
+		case r < 0.9: // 40% Set (0.5 to 0.9)
+			if err := kvs.Set(key, "value"); err != nil {
+				b.Fatalf("Set failed: %v", err)
+			}
+		default: // 10% Del (0.9 to 1.0)
+			if err := kvs.Del(key); err != nil {
+				b.Fatalf("Del failed: %v", err)
+			}
+			// Re-insert to avoid running out of keys
+			if err := kvs.Set(key, "value"); err != nil {
+				b.Fatalf("Set failed: %v", err)
+			}
+		}
+	}
+}
+
+func BenchmarkKVStoreInMemConcurrent(b *testing.B) {
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
+
+	// Pre-populate with 10,000 keys
+	keys := preKeys(10000)
+	for _, key := range keys {
+		if err := kvs.Set(key, "value"); err != nil {
+			b.Fatalf("Set failed: %v", err)
+		}
+	}
+
+	// Run in parallel to simulate concurrent access
+	b.ResetTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			r := rand.Float64()
+			key := keys[rand.Intn(10000)]
+			switch {
+			case r < 0.5: // 50% Get
+				if _, err := kvs.Get(key); err != nil && !strings.Contains(err.Error(), "Key not found") {
+					b.Fatalf("Get failed: %v", err)
+				}
+			case r < 0.9: // 40% Set
+				if err := kvs.Set(key, "value"); err != nil {
+					b.Fatalf("Set failed: %v", err)
+				}
+			default: // 10% Del
+				if err := kvs.Del(key); err != nil {
+					b.Fatalf("Del failed: %v", err)
+				}
+				// Re-insert to avoid running out of keys
+				if err := kvs.Set(key, "value"); err != nil {
+					b.Fatalf("Set failed: %v", err)
+				}
+			}
+		}
+	})
 }
