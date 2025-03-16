@@ -1,0 +1,25 @@
+PASS
+ok  	kv-store	0.212s
+goos: darwin
+goarch: arm64
+pkg: kv-store/internal/kvstore
+cpu: Apple M1
+BenchmarkKVStoreInMemSet-8          	53927390	        21.94 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemGet-8          	59038411	        19.96 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemDel-8          	28787160	        42.57 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemMixed-8        	28456612	        42.86 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemConcurrent-8   	--- FAIL: BenchmarkKVStoreInMemConcurrent-8
+    kvstore_test.go:251: Get failed: Key not found
+    kvstore_test.go:251: Get failed: Key not found
+    kvstore_test.go:251: Get failed: Key not found
+    kvstore_test.go:251: Get failed: Key not found
+    kvstore_test.go:251: Get failed: Key not found
+    kvstore_test.go:251: Get failed: Key not found
+    kvstore_test.go:251: Get failed: Key not found
+FAIL
+exit status 1
+FAIL	kv-store/internal/kvstore	6.419s
+?   	kv-store/internal/storage	[no test files]
+?   	kv-store/internal/storage/bitcask	[no test files]
+?   	kv-store/internal/storage/inmem	[no test files]
+FAIL

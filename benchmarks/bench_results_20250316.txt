@@ -1,0 +1,16 @@
+PASS
+ok  	kv-store	0.566s
+goos: darwin
+goarch: arm64
+pkg: kv-store/internal/kvstore
+cpu: Apple M1
+BenchmarkKVStoreInMemSet-8          	54075666	        21.97 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemGet-8          	57791054	        20.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemDel-8          	28422884	        42.00 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemMixed-8        	28628799	        41.99 ns/op	       0 B/op	       0 allocs/op
+BenchmarkKVStoreInMemConcurrent-8   	 7765716	       156.4 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	kv-store/internal/kvstore	7.388s
+?   	kv-store/internal/storage	[no test files]
+?   	kv-store/internal/storage/bitcask	[no test files]
+?   	kv-store/internal/storage/inmem	[no test files]
