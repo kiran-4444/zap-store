@@ -2,35 +2,33 @@ package kvstore
 
 import (
 	"fmt"
+	"kv-store/internal/storage"
 )
 
 type KVStore struct {
-	hashMap map[string]string
+	StorageEngine storage.StorageEngine
 }
 
-func (kvs *KVStore) Set(key string, value string) error {
-	if key == "" {
-		return fmt.Errorf("Key cannot be empty")
-	}
-
-	kvs.hashMap[key] = value
-	return nil
-}
-
-func (kvs *KVStore) Get(key string) (string, error) {
-	if _, ok := kvs.hashMap[key]; !ok {
-		return "", fmt.Errorf("Key not found")
-	}
-
-	return kvs.hashMap[key], nil
-}
-
-func (kvs *KVStore) Del(key string) {
-	delete(kvs.hashMap, key)
-}
-
-func NewKVStore() *KVStore {
+// NewKVStore creates a new instance of KVStore with the provided storage engine
+func NewKVStore(engine storage.StorageEngine) *KVStore {
 	return &KVStore{
-		hashMap: make(map[string]string),
+		StorageEngine: engine,
 	}
 }
+
+// Get retrieves a value from the storage engine by key
+func (kv *KVStore) Get(key string) (string, error) {
+	return kv.StorageEngine.Get(key)
+}
+
+// Set stores a value in the storage engine with the given key
+func (kv *KVStore) Set(key string, value string) error {
+	return kv.StorageEngine.Set(key, value)
+}
+
+// Delete removes a value from the storage engine by key
+func (kv *KVStore) Del(key string) error {
+	return kv.StorageEngine.Del(key)
+}
+
+var ErrInvalidStorageEngine = fmt.Errorf("invalid storage engine")

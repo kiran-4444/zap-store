@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"kv-store/internal/kvstore"
+	"kv-store/internal/storage/inmem"
 )
 
 func runLoop(kvs *kvstore.KVStore, reader *bufio.Reader, out io.Writer) error {
@@ -75,11 +76,11 @@ func runLoop(kvs *kvstore.KVStore, reader *bufio.Reader, out io.Writer) error {
 }
 
 func main() {
-	kvs := kvstore.NewKVStore()
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := kvstore.NewKVStore(storageEngine)
 
 	reader := bufio.NewReader(os.Stdin)
 	if err := runLoop(kvs, reader, os.Stdout); err != nil {
 		log.Fatal(err)
 	}
-
 }

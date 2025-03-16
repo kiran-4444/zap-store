@@ -3,10 +3,10 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"kv-store/internal/kvstore"
+	"kv-store/internal/storage/inmem"
 	"strings"
 	"testing"
-
-	"kv-store/internal/kvstore"
 )
 
 func TestRunLoop(t *testing.T) {
@@ -70,8 +70,8 @@ func TestRunLoop(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Setup
-			kvs := kvstore.NewKVStore()
+			var storageEngine = inmem.NewInMemStorageEngine()
+			kvs := kvstore.NewKVStore(storageEngine)
 			reader := bufio.NewReader(strings.NewReader(tt.input))
 			var buf bytes.Buffer
 

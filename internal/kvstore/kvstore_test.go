@@ -1,10 +1,11 @@
 package kvstore
 
 import (
+	"kv-store/internal/storage/inmem"
 	"testing"
 )
 
-func TestKVStoreSet(t *testing.T) {
+func TestKVStoreInMemSet(t *testing.T) {
 	tests := []struct {
 		name       string
 		key        string
@@ -20,7 +21,8 @@ func TestKVStoreSet(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			kvs := NewKVStore()
+			var storageEngine = inmem.NewInMemStorageEngine()
+			kvs := NewKVStore(storageEngine)
 			err := kvs.Set(tt.key, tt.value)
 
 			// Error occured when it shouldn't
@@ -45,7 +47,7 @@ func TestKVStoreSet(t *testing.T) {
 				return
 			}
 
-			if got := kvs.hashMap[tt.key]; got != tt.wantMapVal {
+			if got, _ := kvs.Get(tt.key); got != tt.wantMapVal {
 				t.Errorf("Set(%q, %q) map[%q] = %q, want %q", tt.key, tt.value, tt.key, got, tt.wantMapVal)
 			}
 		})
@@ -53,8 +55,9 @@ func TestKVStoreSet(t *testing.T) {
 }
 
 func TestKVStoreGet(t *testing.T) {
-	kvs := NewKVStore()
-	kvs.hashMap["foo"] = "bar"
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
+	kvs.Set("foo", "bar")
 
 	tests := []struct {
 		name       string
@@ -103,12 +106,13 @@ func TestKVStoreGet(t *testing.T) {
 }
 
 func TestKVStoreDel(t *testing.T) {
-	kvs := NewKVStore()
+	var storageEngine = inmem.NewInMemStorageEngine()
+	kvs := NewKVStore(storageEngine)
 
-	kvs.hashMap["foo"] = "bar"
+	kvs.Set("foo", "bar")
 	kvs.Del("foo")
 
-	if _, ok := kvs.hashMap["foo"]; ok {
-		t.Errorf("Del() = %v, want %v", ok, false)
+	if got, _ := kvs.Get("foo"); got != "" {
+		t.Errorf("Del() = %v, want %v", got, false)
 	}
 }
