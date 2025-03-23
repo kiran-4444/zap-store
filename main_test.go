@@ -27,7 +27,7 @@ func TestRunLoop(t *testing.T) {
 		{
 			name:       "delete_key",
 			input:      "set foo bar\ndel foo\nget foo\nexit\n",
-			wantOutput: "> > Deleted foo\n> Key not found\n> Exiting...\n",
+			wantOutput: "> > Deleted foo\n> key not found\n> Exiting...\n",
 			wantMap:    map[string]string{},
 			wantErr:    false,
 		},
@@ -62,7 +62,7 @@ func TestRunLoop(t *testing.T) {
 		{
 			name:       "set_empty_key",
 			input:      "set  val\nexit\n",
-			wantOutput: "> Key cannot be empty\n> Exiting...\n",
+			wantOutput: "> key cannot be empty\n> Exiting...\n",
 			wantMap:    map[string]string{},
 			wantErr:    false,
 		},

@@ -12,7 +12,7 @@ type InMemStorageEngine struct {
 
 func (kvs *InMemStorageEngine) Set(key string, value string) error {
 	if key == "" {
-		return fmt.Errorf("Key cannot be empty")
+		return fmt.Errorf("key cannot be empty")
 	}
 
 	kvs.lock.Lock()
@@ -27,7 +27,7 @@ func (kvs *InMemStorageEngine) Get(key string) (string, error) {
 	defer kvs.lock.Unlock()
 
 	if _, ok := kvs.hashMap[key]; !ok {
-		return "", fmt.Errorf("Key not found")
+		return "", fmt.Errorf("key not found")
 	}
 	return kvs.hashMap[key], nil
 }

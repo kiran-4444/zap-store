@@ -18,7 +18,7 @@ func TestKVStoreInMemSet(t *testing.T) {
 		wantMapVal string
 	}{
 		{name: "valid", key: "key", value: "value", wantErr: false, wantErrMsg: "", wantMapVal: "value"},
-		{name: "empty_key", key: "", value: "value2", wantErr: true, wantErrMsg: "Key cannot be empty", wantMapVal: ""},
+		{name: "empty_key", key: "", value: "value2", wantErr: true, wantErrMsg: "key cannot be empty", wantMapVal: ""},
 		{name: "empty_value", key: "key2", value: "", wantErr: false, wantErrMsg: "", wantMapVal: ""},
 	}
 
@@ -30,14 +30,14 @@ func TestKVStoreInMemSet(t *testing.T) {
 
 			// Error occured when it shouldn't
 			if err != nil {
-				if tt.wantErr == false {
+				if !tt.wantErr {
 					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
 					return
 				}
 			}
 			// No error occured when it should
 			if err == nil {
-				if tt.wantErr == true {
+				if tt.wantErr {
 					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
 					return
 				}
@@ -71,7 +71,7 @@ func TestKVStoreGet(t *testing.T) {
 		wantMapVal string
 	}{
 		{name: "valid", key: "foo", value: "bar", wantErr: false, wantErrMsg: "", wantMapVal: "bar"},
-		{name: "non_existent_key", key: "baz", value: "", wantErr: true, wantErrMsg: "Key not found", wantMapVal: ""},
+		{name: "non_existent_key", key: "baz", value: "", wantErr: true, wantErrMsg: "key not found", wantMapVal: ""},
 	}
 
 	for _, tt := range tests {
@@ -80,14 +80,14 @@ func TestKVStoreGet(t *testing.T) {
 
 			// Error occured when it shouldn't
 			if err != nil {
-				if tt.wantErr == false {
+				if !tt.wantErr {
 					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
 					return
 				}
 			}
 			// No error occured when it should
 			if err == nil {
-				if tt.wantErr == true {
+				if tt.wantErr {
 					t.Errorf("Set(%q, %q) error = %v, wantErr %v", tt.key, tt.value, err, tt.wantErr)
 					return
 				}
@@ -102,6 +102,7 @@ func TestKVStoreGet(t *testing.T) {
 
 			if got != tt.wantMapVal {
 				t.Errorf("Set(%q, %q) map[%q] = %q, want %q", tt.key, tt.value, tt.key, got, tt.wantMapVal)
+				return
 			}
 		})
 
@@ -176,8 +177,7 @@ func BenchmarkKVStoreInMemDel(b *testing.B) {
 		}
 	}
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for i := 0; b.Loop(); i++ {
 		// Cycle through keys to delete
 		key := keys[i%1000]
 		if err := kvs.Del(key); err != nil {
@@ -203,8 +203,8 @@ func BenchmarkKVStoreInMemMixed(b *testing.B) {
 	}
 
 	// Mixed workload: 50% Get, 40% Set, 10% Del
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for i := 0; b.Loop(); i++ {
 		r := rand.Float64() // Random number between 0 and 1
 		key := keys[i%10000]
 		switch {
@@ -248,7 +248,7 @@ func BenchmarkKVStoreInMemConcurrent(b *testing.B) {
 			key := keys[rand.Intn(10000)]
 			switch {
 			case r < 0.5: // 50% Get
-				if _, err := kvs.Get(key); err != nil && !strings.Contains(err.Error(), "Key not found") {
+				if _, err := kvs.Get(key); err != nil && !strings.Contains(err.Error(), "key not found") {
 					b.Fatalf("Get failed: %v", err)
 				}
 			case r < 0.9: // 40% Set
