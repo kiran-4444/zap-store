@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/kiran-4444/zap-store/graph/badge.svg?token=YTobWfz3N1)](https://codecov.io/gh/kiran-4444/zap-store)
+
 # **ZapStore 🚀**
 
 A high-performance, in-memory key-value store built in Go, inspired by Designing Data-Intensive Applications (DDIA). This project is my playground for mastering Go, exploring storage engine design, and diving into the world of distributed systems. It currently supports basic `Get`, `Set`, and `Del` operations with a thread-safe in-memory engine, and I’m actively working on adding a Bitcask storage engine and distributed capabilities.
