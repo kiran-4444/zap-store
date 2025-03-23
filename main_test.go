@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"bytes"
-	"kv-store/internal/kvstore"
 	"kv-store/internal/storage/inmem"
+	"kv-store/internal/zapstore"
 	"strings"
 	"testing"
 )
@@ -14,7 +14,7 @@ func TestRunLoop(t *testing.T) {
 		name       string
 		input      string            // Simulated user input with \n
 		wantOutput string            // Expected output to out
-		wantMap    map[string]string // Expected KVStore state
+		wantMap    map[string]string // Expected ZapStore state
 		wantErr    bool              // Expect an error?
 	}{
 		{
@@ -71,7 +71,7 @@ func TestRunLoop(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var storageEngine = inmem.NewInMemStorageEngine()
-			kvs := kvstore.NewKVStore(storageEngine)
+			kvs := zapstore.NewZapStore(storageEngine)
 			reader := bufio.NewReader(strings.NewReader(tt.input))
 			var buf bytes.Buffer
 
@@ -89,7 +89,7 @@ func TestRunLoop(t *testing.T) {
 				t.Errorf("runLoop() output = %q, want %q", got, tt.wantOutput)
 			}
 
-			// Check KVStore state
+			// Check ZapStore state
 			for key, wantVal := range tt.wantMap {
 				if got, err := kvs.Get(key); err != nil || got != wantVal {
 					t.Errorf("kvs.Get(%q) = %q, err = %v; want %q, nil", key, got, err, wantVal)

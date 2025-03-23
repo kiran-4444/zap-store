@@ -1,4 +1,4 @@
-BINARY_NAME=kv-store
+BINARY_NAME=zap-store
 
 build:
 	go build

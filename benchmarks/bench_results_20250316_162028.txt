@@ -2,23 +2,23 @@ PASS
 ok  	kv-store	0.457s
 goos: darwin
 goarch: arm64
-pkg: kv-store/internal/kvstore
+pkg: kv-store/internal/zapstore
 cpu: Apple M1
-BenchmarkKVStoreInMemSet-8          	46562461	        23.11 ns/op	       0 B/op	       0 allocs/op
-BenchmarkKVStoreInMemGet-8          	58189575	        23.12 ns/op	       0 B/op	       0 allocs/op
-BenchmarkKVStoreInMemDel-8          	27109836	        43.73 ns/op	       0 B/op	       0 allocs/op
-BenchmarkKVStoreInMemMixed-8        	28000854	        43.73 ns/op	       0 B/op	       0 allocs/op
-BenchmarkKVStoreInMemConcurrent-8   	--- FAIL: BenchmarkKVStoreInMemConcurrent-8
-    kvstore_test.go:251: Get failed: Key not found
-    kvstore_test.go:251: Get failed: Key not found
-    kvstore_test.go:251: Get failed: Key not found
-    kvstore_test.go:251: Get failed: Key not found
-    kvstore_test.go:251: Get failed: Key not found
-    kvstore_test.go:251: Get failed: Key not found
-    kvstore_test.go:251: Get failed: Key not found
+BenchmarkZapStoreInMemSet-8          	46562461	        23.11 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemGet-8          	58189575	        23.12 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemDel-8          	27109836	        43.73 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemMixed-8        	28000854	        43.73 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemConcurrent-8   	--- FAIL: BenchmarkZapStoreInMemConcurrent-8
+    zapstore_test.go:251: Get failed: Key not found
+    zapstore_test.go:251: Get failed: Key not found
+    zapstore_test.go:251: Get failed: Key not found
+    zapstore_test.go:251: Get failed: Key not found
+    zapstore_test.go:251: Get failed: Key not found
+    zapstore_test.go:251: Get failed: Key not found
+    zapstore_test.go:251: Get failed: Key not found
 FAIL
 exit status 1
-FAIL	kv-store/internal/kvstore	5.442s
+FAIL	kv-store/internal/zapstore	5.442s
 ?   	kv-store/internal/storage	[no test files]
 ?   	kv-store/internal/storage/bitcask	[no test files]
 ?   	kv-store/internal/storage/inmem	[no test files]

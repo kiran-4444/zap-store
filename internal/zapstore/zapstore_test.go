@@ -1,4 +1,4 @@
-package kvstore
+package zapstore
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestKVStoreInMemSet(t *testing.T) {
+func TestZapStoreInMemSet(t *testing.T) {
 	tests := []struct {
 		name       string
 		key        string
@@ -25,7 +25,7 @@ func TestKVStoreInMemSet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var storageEngine = inmem.NewInMemStorageEngine()
-			kvs := NewKVStore(storageEngine)
+			kvs := NewZapStore(storageEngine)
 			err := kvs.Set(tt.key, tt.value)
 
 			// Error occured when it shouldn't
@@ -57,9 +57,9 @@ func TestKVStoreInMemSet(t *testing.T) {
 	}
 }
 
-func TestKVStoreGet(t *testing.T) {
+func TestZapStoreGet(t *testing.T) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 	kvs.Set("foo", "bar")
 
 	tests := []struct {
@@ -109,9 +109,9 @@ func TestKVStoreGet(t *testing.T) {
 	}
 }
 
-func TestKVStoreDel(t *testing.T) {
+func TestZapStoreDel(t *testing.T) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 
 	kvs.Set("foo", "bar")
 	kvs.Del("foo")
@@ -130,9 +130,9 @@ func preKeys(count int) []string {
 	return keys
 }
 
-func BenchmarkKVStoreInMemSet(b *testing.B) {
+func BenchmarkZapStoreInMemSet(b *testing.B) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 
 	// Pre-generate 1000 keys to avoid allocations during the loop
 	keys := preKeys(1000)
@@ -148,9 +148,9 @@ func BenchmarkKVStoreInMemSet(b *testing.B) {
 	}
 }
 
-func BenchmarkKVStoreInMemGet(b *testing.B) {
+func BenchmarkZapStoreInMemGet(b *testing.B) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 
 	// Pre-populate with one key-value pair for consistent Get
 	if err := kvs.Set("key", "value"); err != nil {
@@ -165,9 +165,9 @@ func BenchmarkKVStoreInMemGet(b *testing.B) {
 	}
 }
 
-func BenchmarkKVStoreInMemDel(b *testing.B) {
+func BenchmarkZapStoreInMemDel(b *testing.B) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 
 	// Pre-populate with 1000 keys to ensure we can delete them
 	keys := preKeys(1000)
@@ -190,9 +190,9 @@ func BenchmarkKVStoreInMemDel(b *testing.B) {
 	}
 }
 
-func BenchmarkKVStoreInMemMixed(b *testing.B) {
+func BenchmarkZapStoreInMemMixed(b *testing.B) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 
 	// Pre-populate with 10,000 keys to simulate a realistic dataset
 	keys := preKeys(10000)
@@ -228,9 +228,9 @@ func BenchmarkKVStoreInMemMixed(b *testing.B) {
 	}
 }
 
-func BenchmarkKVStoreInMemConcurrent(b *testing.B) {
+func BenchmarkZapStoreInMemConcurrent(b *testing.B) {
 	var storageEngine = inmem.NewInMemStorageEngine()
-	kvs := NewKVStore(storageEngine)
+	kvs := NewZapStore(storageEngine)
 
 	// Pre-populate with 10,000 keys
 	keys := preKeys(10000)

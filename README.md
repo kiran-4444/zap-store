@@ -1,10 +1,10 @@
-# **KV Store 🚀**
+# **ZapStore 🚀**
 
 A high-performance, in-memory key-value store built in Go, inspired by Designing Data-Intensive Applications (DDIA). This project is my playground for mastering Go, exploring storage engine design, and diving into the world of distributed systems. It currently supports basic `Get`, `Set`, and `Del` operations with a thread-safe in-memory engine, and I’m actively working on adding a Bitcask storage engine and distributed capabilities.
 
 ## **🌟 Why This Project?**
 
-I built KV Store to deepen my understanding of key-value storage systems while honing my Go skills. Drawing inspiration from DDIA, I’m exploring the trade-offs of in-memory vs. disk-based storage, concurrency, and scalability. This project is a hands-on journey through the fundamentals of data-intensive applications, with a focus on clean code, performance optimization, and extensibility.
+I built ZapStore to deepen my understanding of key-value storage systems while honing my Go skills. Drawing inspiration from DDIA, I’m exploring the trade-offs of in-memory vs. disk-based storage, concurrency, and scalability. This project is a hands-on journey through the fundamentals of data-intensive applications, with a focus on clean code, performance optimization, and extensibility.
 
 ### **Key Features**
 
@@ -26,8 +26,8 @@ I built KV Store to deepen my understanding of key-value storage systems while h
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/kv-store.git
-cd kv-store
+git clone https://github.com/kiran-4444/zap-store.git
+cd zap-store
 ```
 
 1. Build the project:
@@ -36,11 +36,11 @@ cd kv-store
 make build
 ```
 
-This creates a binary named `kv-store`.
+This creates a binary named `zap-store`.
 
 ### Usage
 
-Run the KV Store CLI:
+Run the ZapStore CLI:
 
 ```bash
 make run
@@ -56,9 +56,9 @@ This starts an interactive CLI where you can issue commands like:
 Example session:
 
 ```bash
-➜  kv-store git:(main) ✗ make run
+➜  zap-store git:(main) ✗ make run
 go build
-./kv-store
+./zap-store
 > set foo bar
 > get foo
 bar
@@ -91,8 +91,8 @@ make bench
 
 - [x]  **In-Memory Storage Engine**: A thread-safe engine with sub-50 ns/op performance.
 - [ ]  **Bitcask Storage Engine**: Implement a disk-based engine inspired by Bitcask for persistence and larger datasets.
-- [ ]  **Server-Client Architecture**: Transform KV Store into a server that multiple clients can connect to, using a custom query language for interaction.
-- [ ]  **Distributed System**: Add replication and sharding to make KV Store distributed, exploring consistency and fault tolerance.
+- [ ]  **Server-Client Architecture**: Transform ZapStore into a server that multiple clients can connect to, using a custom query language for interaction.
+- [ ]  **Distributed System**: Add replication and sharding to make ZapStore distributed, exploring consistency and fault tolerance.
 
 ## 🧠 What I’ve Learned
 

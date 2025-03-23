@@ -1,33 +1,33 @@
-package kvstore
+package zapstore
 
 import (
 	"fmt"
 	"kv-store/internal/storage"
 )
 
-type KVStore struct {
+type ZapStore struct {
 	StorageEngine storage.StorageEngine
 }
 
-// NewKVStore creates a new instance of KVStore with the provided storage engine
-func NewKVStore(engine storage.StorageEngine) *KVStore {
-	return &KVStore{
+// NewZapStore creates a new instance of ZapStore with the provided storage engine
+func NewZapStore(engine storage.StorageEngine) *ZapStore {
+	return &ZapStore{
 		StorageEngine: engine,
 	}
 }
 
 // Get retrieves a value from the storage engine by key
-func (kv *KVStore) Get(key string) (string, error) {
+func (kv *ZapStore) Get(key string) (string, error) {
 	return kv.StorageEngine.Get(key)
 }
 
 // Set stores a value in the storage engine with the given key
-func (kv *KVStore) Set(key string, value string) error {
+func (kv *ZapStore) Set(key string, value string) error {
 	return kv.StorageEngine.Set(key, value)
 }
 
 // Delete removes a value from the storage engine by key
-func (kv *KVStore) Del(key string) error {
+func (kv *ZapStore) Del(key string) error {
 	return kv.StorageEngine.Del(key)
 }
 
