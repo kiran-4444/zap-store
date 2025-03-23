@@ -104,7 +104,7 @@ make bench
 
 **Benchmarking**: Automated performance tracking with a `Makefile`, saving timestamped results for trend analysis.
 
-### 🤝 Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Whether it’s adding features, optimizing performance, or fixing bugs, I’d love to collaborate. Here’s how to get started:
 
