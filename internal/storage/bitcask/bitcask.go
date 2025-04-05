@@ -218,7 +218,7 @@ func getKeyDir(dataDir string) (map[string]KeyDir, error) {
 		}
 		defer file.Close()
 
-		var position int64
+		var position int64 = 0
 		for {
 			entry, err := readEntry(file, position)
 			if err == io.EOF {
@@ -231,7 +231,7 @@ func getKeyDir(dataDir string) (map[string]KeyDir, error) {
 			keyDir[entry.key] = KeyDir{
 				fileId:        fileId,
 				valueSize:     int64(entry.valueSize),
-				valuePosition: position + int64(28) + 1, // Offset after fixed fields
+				valuePosition: position + int64(28) + int64(entry.keySize),
 				timeStamp:     entry.timeStamp,
 			}
 
