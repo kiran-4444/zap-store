@@ -3,10 +3,10 @@ package main
 import (
 	"bufio"
 	"bytes"
-	"kv-store/internal/storage/inmem"
-	"kv-store/internal/zapstore"
 	"strings"
 	"testing"
+	"zap-store/internal/storage/inmem"
+	"zap-store/internal/zapstore"
 )
 
 func TestRunLoop(t *testing.T) {

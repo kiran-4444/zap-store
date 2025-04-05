@@ -1,9 +1,9 @@
 goos: darwin
 goarch: arm64
-pkg: kv-store/internal/zapstore
+pkg: zap-store/internal/zapstore
 cpu: Apple M1
 BenchmarkZapStoreInMemSet-8   	 3443665	       423.8 ns/op	     147 B/op	       4 allocs/op
 BenchmarkZapStoreInMemGet-8   	 4212025	       291.7 ns/op	      23 B/op	       1 allocs/op
 BenchmarkZapStoreInMemDel-8   	 5047299	       354.7 ns/op	      23 B/op	       1 allocs/op
 PASS
-ok  	kv-store/internal/zapstore	13.012s
+ok  	zap-store/internal/zapstore	13.012s

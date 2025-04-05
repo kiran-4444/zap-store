@@ -2,10 +2,10 @@ package zapstore
 
 import (
 	"fmt"
-	"kv-store/internal/storage/inmem"
 	"math/rand"
 	"strings"
 	"testing"
+	"zap-store/internal/storage/inmem"
 )
 
 func TestZapStoreInMemSet(t *testing.T) {

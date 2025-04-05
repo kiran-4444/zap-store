@@ -1,14 +1,14 @@
 PASS
-ok  	kv-store	0.214s
+ok  	zap-store	0.214s
 goos: darwin
 goarch: arm64
-pkg: kv-store/internal/zapstore
+pkg: zap-store/internal/zapstore
 cpu: Apple M1
 BenchmarkZapStoreInMemSet-8   	 2425344	       432.0 ns/op	     186 B/op	       4 allocs/op
 BenchmarkZapStoreInMemGet-8   	 5371492	       344.7 ns/op	      23 B/op	       1 allocs/op
 BenchmarkZapStoreInMemDel-8   	 5636008	       282.0 ns/op	      23 B/op	       1 allocs/op
 PASS
-ok  	kv-store/internal/zapstore	11.031s
-?   	kv-store/internal/storage	[no test files]
-?   	kv-store/internal/storage/bitcask	[no test files]
-?   	kv-store/internal/storage/inmem	[no test files]
+ok  	zap-store/internal/zapstore	11.031s
+?   	zap-store/internal/storage	[no test files]
+?   	zap-store/internal/storage/bitcask	[no test files]
+?   	zap-store/internal/storage/inmem	[no test files]

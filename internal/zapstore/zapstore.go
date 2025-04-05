@@ -2,7 +2,7 @@ package zapstore
 
 import (
 	"fmt"
-	"kv-store/internal/storage"
+	"zap-store/internal/storage"
 )
 
 type ZapStore struct {

@@ -1,8 +1,8 @@
 PASS
-ok  	kv-store	0.002s
+ok  	zap-store	0.002s
 goos: linux
 goarch: amd64
-pkg: kv-store/internal/zapstore
+pkg: zap-store/internal/zapstore
 cpu: 12th Gen Intel(R) Core(TM) i3-1215U
 BenchmarkZapStoreInMemSet-8          	65616360	        18.68 ns/op	       0 B/op	       0 allocs/op
 BenchmarkZapStoreInMemGet-8          	60300418	        20.72 ns/op	       0 B/op	       0 allocs/op
@@ -10,8 +10,8 @@ BenchmarkZapStoreInMemDel-8          	25984669	        45.86 ns/op	       0 B/op
 BenchmarkZapStoreInMemMixed-8        	31671894	        37.00 ns/op	       0 B/op	       0 allocs/op
 BenchmarkZapStoreInMemConcurrent-8   	 6558459	       187.0 ns/op	       0 B/op	       0 allocs/op
 PASS
-ok  	kv-store/internal/zapstore	7.241s
-?   	kv-store/internal/storage	[no test files]
-?   	kv-store/internal/storage/bitcask	[no test files]
+ok  	zap-store/internal/zapstore	7.241s
+?   	zap-store/internal/storage	[no test files]
+?   	zap-store/internal/storage/bitcask	[no test files]
 PASS
-ok  	kv-store/internal/storage/inmem	0.002s
+ok  	zap-store/internal/storage/inmem	0.002s

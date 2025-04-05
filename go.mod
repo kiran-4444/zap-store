@@ -1,3 +1,3 @@
-module kv-store
+module zap-store
 
 go 1.24.0

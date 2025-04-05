@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"kv-store/internal/storage/inmem"
-	"kv-store/internal/zapstore"
+	"zap-store/internal/storage/bitcask"
+	"zap-store/internal/zapstore"
 )
 
 func runLoop(kvs *zapstore.ZapStore, reader *bufio.Reader, out io.Writer) error {
@@ -76,7 +76,11 @@ func runLoop(kvs *zapstore.ZapStore, reader *bufio.Reader, out io.Writer) error 
 }
 
 func main() {
-	var storageEngine = inmem.NewInMemStorageEngine()
+	// var storageEngine = inmem.NewInMemStorageEngine()
+	var storageEngine, err = bitcask.NewBitCaskStorageEngine("data")
+	if err != nil {
+		log.Fatalf("Error initialising bitcask: %w", err)
+	}
 	kvs := zapstore.NewZapStore(storageEngine)
 
 	reader := bufio.NewReader(os.Stdin)
