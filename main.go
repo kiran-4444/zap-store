@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -78,26 +79,44 @@ func runLoop(kvs *zapstore.ZapStore, reader *bufio.Reader, out io.Writer) error 
 }
 
 func main() {
-	var args = os.Args
-	if len(args) < 2 {
-		log.Fatal("usage: specify atleast one storage engine: inmem or bitcask")
-	}
-	var storageEngine storage.StorageEngine
-	if args[1] == "inmem" {
-		storageEngine = inmem.NewInMemStorageEngine()
-	} else if args[1] == "bitcask" {
-		if len(args) != 3 {
-			log.Fatal("usage: specify data directory for bitcask")
-		}
-		var err error
-		storageEngine, err = bitcask.NewBitCaskStorageEngine(args[2])
-		defer storageEngine.Close()
 
+	logFileName := "logFile.log"
+	logFile, err := os.OpenFile(logFileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("failed to open log file: %s", err)
+	}
+	defer logFile.Close()
+
+	log.SetOutput(logFile)
+
+	log.SetFlags(log.LstdFlags | log.Llongfile)
+
+	var engineFlag = flag.String("engine", "inmem", "Storage engine to use (inmem or bitcask)")
+	var dataDirFlag = flag.String("dataDir", "", "Directory for BitCask data files")
+	flag.Parse()
+
+	log.Printf("Starting with storage engine: %s\n", *engineFlag)
+
+	var storageEngine storage.StorageEngine
+
+	switch *engineFlag {
+	case "inmem":
+		storageEngine = inmem.NewInMemStorageEngine()
+	case "bitcask":
+		if *dataDirFlag == "" {
+			log.Fatal("Please specify a data directory for BitCask using the -dataDir flag")
+		}
+
+		log.Printf("Using BitCask storage engine with data directory: %s\n", *dataDirFlag)
+
+		var err error
+		storageEngine, err = bitcask.NewBitCaskStorageEngine(*dataDirFlag)
 		if err != nil {
 			log.Fatal(err)
 		}
-	} else {
-		log.Fatal("usage: specify atleast one storage engine: inmem or bitcask")
+		defer storageEngine.Close()
+	default:
+		log.Fatal("usage: specify at least one storage engine: inmem or bitcask")
 	}
 
 	kvs := zapstore.NewZapStore(storageEngine)

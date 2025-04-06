@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hash/crc32"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -371,6 +372,7 @@ func NewBitCaskStorageEngine(dataDir string) (*BitCaskStorageEngine, error) {
 	// If successful, fLock is held. It MUST be released on Close.
 
 	// 3. Load KeyDir from existing files
+	log.Println("Loading KeyDir from data directory:", dataDir)
 	keyDir, lastFileId, err := getKeyDir(dataDir)
 	if err != nil {
 		fLock.Unlock() // Release lock if KeyDir load fails
