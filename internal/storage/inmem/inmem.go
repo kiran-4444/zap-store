@@ -40,6 +40,10 @@ func (kvs *InMemStorageEngine) Del(key string) error {
 	return nil
 }
 
+func (kvs *InMemStorageEngine) Close() error {
+	return nil
+}
+
 func NewInMemStorageEngine() *InMemStorageEngine {
 	return &InMemStorageEngine{
 		hashMap: make(map[string]string),

@@ -8,7 +8,9 @@ import (
 	"os"
 	"strings"
 
+	"zap-store/internal/storage"
 	"zap-store/internal/storage/bitcask"
+	"zap-store/internal/storage/inmem"
 	"zap-store/internal/zapstore"
 )
 
@@ -76,11 +78,28 @@ func runLoop(kvs *zapstore.ZapStore, reader *bufio.Reader, out io.Writer) error 
 }
 
 func main() {
-	// var storageEngine = inmem.NewInMemStorageEngine()
-	var storageEngine, err = bitcask.NewBitCaskStorageEngine("data")
-	if err != nil {
-		log.Fatalf("Error initialising bitcask: %w", err)
+	var args = os.Args
+	if len(args) < 2 {
+		log.Fatal("usage: specify atleast one storage engine: inmem or bitcask")
 	}
+	var storageEngine storage.StorageEngine
+	if args[1] == "inmem" {
+		storageEngine = inmem.NewInMemStorageEngine()
+	} else if args[1] == "bitcask" {
+		if len(args) != 3 {
+			log.Fatal("usage: specify data directory for bitcask")
+		}
+		var err error
+		storageEngine, err = bitcask.NewBitCaskStorageEngine(args[2])
+		defer storageEngine.Close()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("usage: specify atleast one storage engine: inmem or bitcask")
+	}
+
 	kvs := zapstore.NewZapStore(storageEngine)
 
 	reader := bufio.NewReader(os.Stdin)
