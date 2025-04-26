@@ -1,0 +1,23 @@
+PASS
+ok  	zap-store	0.002s
+?   	zap-store/internal/storage	[no test files]
+PASS
+ok  	zap-store/internal/storage/bitcask	0.019s
+PASS
+ok  	zap-store/internal/storage/inmem	0.002s
+goos: linux
+goarch: amd64
+pkg: zap-store/internal/zapstore
+cpu: 12th Gen Intel(R) Core(TM) i3-1215U
+BenchmarkZapStoreInMemSet-8            	46671631	        22.43 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemGet-8            	42665618	        24.75 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemDel-8            	23454741	        50.68 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemMixed-8          	28292713	        41.26 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreInMemConcurrent-8     	 5711031	       205.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkZapStoreBitCaskSet-8          	 1504806	       785.6 ns/op	     200 B/op	       8 allocs/op
+BenchmarkZapStoreBitCaskGet-8          	  404151	      2934 ns/op	     298 B/op	       7 allocs/op
+BenchmarkZapStoreBitCaskDel-8          	  816415	      1688 ns/op	     408 B/op	      16 allocs/op
+BenchmarkZapStoreBitCaskMixed-8        	  550442	      2161 ns/op	     271 B/op	       8 allocs/op
+BenchmarkZapStoreBitCaskConcurrent-8   	  273111	      4282 ns/op	     271 B/op	       8 allocs/op
+PASS
+ok  	zap-store/internal/zapstore	13.962s

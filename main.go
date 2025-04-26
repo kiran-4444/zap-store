@@ -87,8 +87,8 @@ func main() {
 	}
 	defer logFile.Close()
 
+	// log.SetOutput(io.MultiWriter(logFile, os.Stderr))
 	log.SetOutput(logFile)
-
 	log.SetFlags(log.LstdFlags | log.Llongfile)
 
 	var engineFlag = flag.String("engine", "inmem", "Storage engine to use (inmem or bitcask)")

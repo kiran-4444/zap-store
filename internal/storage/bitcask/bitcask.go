@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"hash/crc32"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -129,6 +128,7 @@ func (l *Log) setLogEntry(dataDirFileLogEntry *DataDirFileLogEntry) (valueStartO
 	entryEndOffset = l.writerPosition + int64(bytesWritten)
 	// valueStartOffset = entryEndOffset - dataDirFileLogEntry.valueSize
 	// More robustly: value starts after header and key
+	// Fixed header size: crc(4) + ts(8) + ksz(8) + vsz(8) = 28 bytes
 	valueStartOffset = (l.writerPosition + 28 + dataDirFileLogEntry.keySize)
 
 	// Update writerPosition *after* successful write
@@ -193,6 +193,7 @@ type KeyDir struct {
 // readEntry reads a full entry (header, key, value) from a given position. Used for KeyDir rebuild.
 func readEntry(f *os.File, position int64) (*DataDirFileLogEntry, int64, error) {
 	// Fixed header size
+	// Fixed header size: crc(4) + ts(8) + ksz(8) + vsz(8) = 28 bytes
 	headerSize := int64(28)
 
 	// Seek to the start of the entry
@@ -232,8 +233,8 @@ func readEntry(f *os.File, position int64) (*DataDirFileLogEntry, int64, error) 
 		return nil, 0, fmt.Errorf("failed decoding valueSize at pos %d: %w", position, err)
 	}
 
-	// Basic sanity check (optional but recommended)
-	if entry.keySize < 0 || entry.valueSize < 0 || entry.keySize > 1<<20 || entry.valueSize > 1<<20 { // Example limits
+	// Basic sanity check
+	if entry.keySize < 0 || entry.valueSize < 0 || entry.keySize > 1<<20 || entry.valueSize > 1<<20 {
 		return nil, 0, fmt.Errorf("invalid entry size (ksz=%d, vsz=%d) at pos %d", entry.keySize, entry.valueSize, position)
 	}
 
@@ -284,7 +285,7 @@ func getKeyDir(dataDir string) (map[string]KeyDir, int64, error) {
 		if err != nil {
 			// Log warning about potentially invalid file names
 			fmt.Fprintf(os.Stderr, "Warning: Skipping file with invalid name format: %s (%v)\n", fileName, err)
-			continue // Skip this file
+			continue
 		}
 
 		// Keep track of the highest file ID seen
@@ -316,6 +317,7 @@ func getKeyDir(dataDir string) (map[string]KeyDir, int64, error) {
 				delete(keyDir, entry.key)
 			} else {
 				// Calculate value position
+				// Fixed header size: crc(4) + ts(8) + ksz(8) + vsz(8) = 28 bytes
 				valuePos := position + 28 + entry.keySize
 
 				// Only store if this entry is newer than existing one
@@ -372,7 +374,6 @@ func NewBitCaskStorageEngine(dataDir string) (*BitCaskStorageEngine, error) {
 	// If successful, fLock is held. It MUST be released on Close.
 
 	// 3. Load KeyDir from existing files
-	log.Println("Loading KeyDir from data directory:", dataDir)
 	keyDir, lastFileId, err := getKeyDir(dataDir)
 	if err != nil {
 		fLock.Unlock() // Release lock if KeyDir load fails
@@ -411,7 +412,6 @@ func (bcse *BitCaskStorageEngine) Set(key string, value string) error {
 	bcse.mu.Lock()
 	defer bcse.mu.Unlock()
 
-	// --- Check for log rotation (Simplified example: No rotation yet) ---
 	// TODO: Add logic here to check if bcse.activeLog.writerPosition exceeds a threshold.
 	// If so:
 	// 1. Call bcse.activeLog.Close()
