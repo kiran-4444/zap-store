@@ -466,8 +466,8 @@ func (bcse *BitCaskStorageEngine) Get(key string) (string, error) {
 	return value, nil
 }
 
-func (bcse *BitCaskStorageEngine) Del(key string) error {
-	// Acquire exclusive lock (goroutine safety) - as Del modifies KeyDir and writes a tombstone
+func (bcse *BitCaskStorageEngine) Delete(key string) error {
+	// Acquire exclusive lock (goroutine safety) - as Delete modifies KeyDir and writes a tombstone
 	bcse.mu.Lock()
 	defer bcse.mu.Unlock()
 

@@ -2,7 +2,7 @@
 
 # **ZapStore 🚀**
 
-A high-performance, in-memory key-value store built in Go, inspired by Designing Data-Intensive Applications (DDIA). This project is my playground for mastering Go, exploring storage engine design, and diving into the world of distributed systems. It currently supports basic `Get`, `Set`, and `Del` operations with a thread-safe in-memory engine, and I’m actively working on adding a Bitcask storage engine and distributed capabilities.
+A high-performance, in-memory key-value store built in Go, inspired by Designing Data-Intensive Applications (DDIA). This project is my playground for mastering Go, exploring storage engine design, and diving into the world of distributed systems. It currently supports basic `Get`, `Set`, and `Delete` operations with a thread-safe in-memory engine, and I’m actively working on adding a Bitcask storage engine and distributed capabilities.
 
 ## **🌟 Why This Project?**
 
@@ -11,7 +11,7 @@ I built ZapStore to deepen my understanding of key-value storage systems while h
 ### **Key Features**
 
 - **In-Memory Storage Engine**: A thread-safe, lightning-fast engine using Go’s sync.Mutex for concurrent access.
-- **Basic Operations**: Supports Get, Set, and Del with robust error handling.
+- **Basic Operations**: Supports Get, Set, and Delete with robust error handling.
 - **Performance Optimized**: Achieves sub-50 ns/op for all operations on an Apple M1 (see ).
 - **Extensible Design**: Built with a pluggable StorageEngine interface to support future engines like Bitcask.
 - **Automated Benchmarking**: Includes a Makefile to run and save benchmark results with timestamps for performance tracking.
@@ -80,8 +80,8 @@ I’ve optimized the in-memory engine for performance, achieving impressive resu
 | --- | --- | --- |
 | `Set` | 22.82 ns/op | 0 B/op, 0 allocs/op |
 | `Get` | 21.10 ns/op | 0 B/op, 0 allocs/op |
-| `Del` | 42.88 ns/op | 0 B/op, 0 allocs/op |
-| Mixed (50% Get, 40% Set, 10% Del) | 43.59 ns/op | 0 B/op, 0 allocs/op |
+| `Delete` | 42.88 ns/op | 0 B/op, 0 allocs/op |
+| Mixed (50% Get, 40% Set, 10% Delete) | 43.59 ns/op | 0 B/op, 0 allocs/op |
 
 Run benchmarks yourself:
 

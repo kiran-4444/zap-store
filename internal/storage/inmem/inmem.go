@@ -32,7 +32,7 @@ func (kvs *InMemStorageEngine) Get(key string) (string, error) {
 	return kvs.hashMap[key], nil
 }
 
-func (kvs *InMemStorageEngine) Del(key string) error {
+func (kvs *InMemStorageEngine) Delete(key string) error {
 	kvs.lock.Lock()
 	defer kvs.lock.Unlock()
 

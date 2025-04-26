@@ -1,3 +1,4 @@
-zap-store
+zapstore-cli
+zapstore-server
 data/
 *.log

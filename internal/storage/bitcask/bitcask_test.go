@@ -127,9 +127,9 @@ func TestBitCaskStorageEngine_Delete(t *testing.T) {
 		keyToSet     string // Key to set initially (if any)
 		valueToSet   string
 		keyToDelete  string
-		delShouldErr bool   // Currently Del doesn't return errors for non-existent keys
-		getShouldErr bool   // Whether Get after Del should error
-		errMsg       string // Expected error message for Get after Del
+		delShouldErr bool   // Currently Delete doesn't return errors for non-existent keys
+		getShouldErr bool   // Whether Get after Delete should error
+		errMsg       string // Expected error message for Get after Delete
 	}{
 		{name: "delete existing key", keyToSet: "del_key1", valueToSet: "del_val1", keyToDelete: "del_key1", delShouldErr: false, getShouldErr: true, errMsg: "key not found"},
 		{name: "delete non-existent key", keyToSet: "", valueToSet: "", keyToDelete: "del_key_never_set", delShouldErr: false, getShouldErr: true, errMsg: "key not found"},
@@ -150,13 +150,13 @@ func TestBitCaskStorageEngine_Delete(t *testing.T) {
 				// if err != nil { t.Fatalf("Get after initial Set failed: %v", err) }
 			}
 
-			// Perform Del
-			err := db.Del(tt.keyToDelete)
+			// Perform Delete
+			err := db.Delete(tt.keyToDelete)
 			if (err != nil) != tt.delShouldErr {
-				t.Fatalf("Del(%q) error = %v, wantDelErr %v", tt.keyToDelete, err, tt.delShouldErr)
+				t.Fatalf("Delete(%q) error = %v, wantDelErr %v", tt.keyToDelete, err, tt.delShouldErr)
 			}
 			if err != nil {
-				return // Don't proceed if Del failed unexpectedly
+				return // Don't proceed if Delete failed unexpectedly
 			}
 
 			// Perform Get on the deleted key
@@ -164,13 +164,13 @@ func TestBitCaskStorageEngine_Delete(t *testing.T) {
 
 			if errGet != nil {
 				if !tt.getShouldErr {
-					t.Errorf("Get(%q) after Del unexpected error = %v", tt.keyToDelete, errGet)
+					t.Errorf("Get(%q) after Delete unexpected error = %v", tt.keyToDelete, errGet)
 				} else if !strings.Contains(errGet.Error(), tt.errMsg) {
-					t.Errorf("Get(%q) after Del error = %q, want error containing %q", tt.keyToDelete, errGet.Error(), tt.errMsg)
+					t.Errorf("Get(%q) after Delete error = %q, want error containing %q", tt.keyToDelete, errGet.Error(), tt.errMsg)
 				}
 			} else { // errGet == nil
 				if tt.getShouldErr {
-					t.Errorf("Get(%q) after Del expected error containing %q, but got nil", tt.keyToDelete, tt.errMsg)
+					t.Errorf("Get(%q) after Delete expected error containing %q, but got nil", tt.keyToDelete, tt.errMsg)
 				}
 			}
 
@@ -277,8 +277,8 @@ func TestBitCaskStorageEngine_DeletePersistence(t *testing.T) {
 		if err := db1.Set(key2, val2); err != nil {
 			t.Fatalf("Phase 1 Set key2 failed: %v", err)
 		}
-		if err := db1.Del(key1); err != nil {
-			t.Fatalf("Phase 1 Del key1 failed: %v", err)
+		if err := db1.Delete(key1); err != nil {
+			t.Fatalf("Phase 1 Delete key1 failed: %v", err)
 		}
 	})
 

@@ -108,10 +108,10 @@ func TestInMemStorageEngineDel(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		inMemStorageEngine.Del(tt.key)
+		inMemStorageEngine.Delete(tt.key)
 
 		if got, _ := inMemStorageEngine.Get(tt.key); got != "" {
-			t.Errorf("Del() = %v, want %v", got, tt.wantMapVal)
+			t.Errorf("Delete() = %v, want %v", got, tt.wantMapVal)
 		}
 	}
 }

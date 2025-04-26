@@ -1,10 +1,20 @@
-BINARY_NAME=zap-store
+SERVER_BINARY_NAME=zapstore-server
+CLI_BINARY_NAME=zapstore-cli
 
-build:
-	go build
+ARGS ?= -engine bitcask -dataDir data
 
-run: build
-	./${BINARY_NAME} $(ARGS)
+build-server:
+	go build -o zapstore-server cmd/server/main.go
+
+build-cli:
+	go build -o zapstore-cli cmd/cli/main.go
+
+run-server: build-server
+	./${SERVER_BINARY_NAME} $(ARGS)
+
+run-cli: build-cli
+	./${CLI_BINARY_NAME}
+
 
 clean:
 	go clean

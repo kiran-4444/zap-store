@@ -115,10 +115,10 @@ func TestZapStoreDel(t *testing.T) {
 	kvs := NewZapStore(storageEngine)
 
 	kvs.Set("foo", "bar")
-	kvs.Del("foo")
+	kvs.Delete("foo")
 
 	if got, _ := kvs.Get("foo"); got != "" {
-		t.Errorf("Del() = %v, want %v", got, false)
+		t.Errorf("Delete() = %v, want %v", got, false)
 	}
 }
 
@@ -181,8 +181,8 @@ func BenchmarkZapStoreInMemDel(b *testing.B) {
 	for i := 0; b.Loop(); i++ {
 		// Cycle through keys to delete
 		key := keys[i%1000]
-		if err := kvs.Del(key); err != nil {
-			b.Fatalf("Del failed: %v", err)
+		if err := kvs.Delete(key); err != nil {
+			b.Fatalf("Delete failed: %v", err)
 		}
 		// Re-insert to avoid running out of keys
 		if err := kvs.Set(key, "value"); err != nil {
@@ -203,7 +203,7 @@ func BenchmarkZapStoreInMemMixed(b *testing.B) {
 		}
 	}
 
-	// Mixed workload: 50% Get, 40% Set, 10% Del
+	// Mixed workload: 50% Get, 40% Set, 10% Delete
 
 	for i := 0; b.Loop(); i++ {
 		r := rand.Float64() // Random number between 0 and 1
@@ -217,9 +217,9 @@ func BenchmarkZapStoreInMemMixed(b *testing.B) {
 			if err := kvs.Set(key, "value"); err != nil {
 				b.Fatalf("Set failed: %v", err)
 			}
-		default: // 10% Del (0.9 to 1.0)
-			if err := kvs.Del(key); err != nil {
-				b.Fatalf("Del failed: %v", err)
+		default: // 10% Delete (0.9 to 1.0)
+			if err := kvs.Delete(key); err != nil {
+				b.Fatalf("Delete failed: %v", err)
 			}
 			// Re-insert to avoid running out of keys
 			if err := kvs.Set(key, "value"); err != nil {
@@ -256,9 +256,9 @@ func BenchmarkZapStoreInMemConcurrent(b *testing.B) {
 				if err := kvs.Set(key, "value"); err != nil {
 					b.Fatalf("Set failed: %v", err)
 				}
-			default: // 10% Del
-				if err := kvs.Del(key); err != nil {
-					b.Fatalf("Del failed: %v", err)
+			default: // 10% Delete
+				if err := kvs.Delete(key); err != nil {
+					b.Fatalf("Delete failed: %v", err)
 				}
 				// Re-insert to avoid running out of keys
 				if err := kvs.Set(key, "value"); err != nil {
@@ -344,8 +344,8 @@ func BenchmarkZapStoreBitCaskDel(b *testing.B) {
 	for i := 0; b.Loop(); i++ {
 		// Cycle through keys to delete
 		key := keys[i%1000]
-		if err := kvs.Del(key); err != nil {
-			b.Fatalf("Del failed: %v", err)
+		if err := kvs.Delete(key); err != nil {
+			b.Fatalf("Delete failed: %v", err)
 		}
 		// Re-insert to avoid running out of keys
 		if err := kvs.Set(key, "value"); err != nil {
@@ -376,7 +376,7 @@ func BenchmarkZapStoreBitCaskMixed(b *testing.B) {
 		}
 	}
 
-	// Mixed workload: 50% Get, 40% Set, 10% Del
+	// Mixed workload: 50% Get, 40% Set, 10% Delete
 
 	for i := 0; b.Loop(); i++ {
 		r := rand.Float64() // Random number between 0 and 1
@@ -390,9 +390,9 @@ func BenchmarkZapStoreBitCaskMixed(b *testing.B) {
 			if err := kvs.Set(key, "value"); err != nil {
 				b.Fatalf("Set failed: %v", err)
 			}
-		default: // 10% Del (0.9 to 1.0)
-			if err := kvs.Del(key); err != nil {
-				b.Fatalf("Del failed: %v", err)
+		default: // 10% Delete (0.9 to 1.0)
+			if err := kvs.Delete(key); err != nil {
+				b.Fatalf("Delete failed: %v", err)
 			}
 			// Re-insert to avoid running out of keys
 			if err := kvs.Set(key, "value"); err != nil {
@@ -434,9 +434,9 @@ func BenchmarkZapStoreBitCaskConcurrent(b *testing.B) {
 				if err := kvs.Set(key, "value"); err != nil {
 					b.Fatalf("Set failed: %v", err)
 				}
-			default: // 10% Del
-				if err := kvs.Del(key); err != nil {
-					b.Fatalf("Del failed: %v", err)
+			default: // 10% Delete
+				if err := kvs.Delete(key); err != nil {
+					b.Fatalf("Delete failed: %v", err)
 				}
 				// Re-insert to avoid running out of keys
 				if err := kvs.Set(key, "value"); err != nil {

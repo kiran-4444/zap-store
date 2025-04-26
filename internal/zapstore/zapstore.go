@@ -27,8 +27,8 @@ func (kv *ZapStore) Set(key string, value string) error {
 }
 
 // Delete removes a value from the storage engine by key
-func (kv *ZapStore) Del(key string) error {
-	return kv.StorageEngine.Del(key)
+func (kv *ZapStore) Delete(key string) error {
+	return kv.StorageEngine.Delete(key)
 }
 
 var ErrInvalidStorageEngine = fmt.Errorf("invalid storage engine")
