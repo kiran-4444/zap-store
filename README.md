@@ -92,7 +92,7 @@ make bench
 ## 🛠️ Roadmap
 
 - [x]  **In-Memory Storage Engine**: A thread-safe engine with sub-50 ns/op performance.
-- [ ]  **Bitcask Storage Engine**: Implement a disk-based engine inspired by Bitcask for persistence and larger datasets.
+- [x]  **Bitcask Storage Engine**: Implement a disk-based engine inspired by Bitcask for persistence and larger datasets.
 - [ ]  **Server-Client Architecture**: Transform ZapStore into a server that multiple clients can connect to, using a custom query language for interaction.
 - [ ]  **Distributed System**: Add replication and sharding to make ZapStore distributed, exploring consistency and fault tolerance.
 
