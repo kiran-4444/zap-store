@@ -13,6 +13,7 @@ import (
 	"zap-store/internal/storage/bitcask"
 	"zap-store/internal/storage/inmem"
 	"zap-store/internal/zapstore"
+	"zap-store/server"
 )
 
 func runLoop(kvs *zapstore.ZapStore, reader *bufio.Reader, out io.Writer) error {
@@ -88,8 +89,9 @@ func main() {
 	defer logFile.Close()
 
 	// log.SetOutput(io.MultiWriter(logFile, os.Stderr))
-	log.SetOutput(logFile)
-	log.SetFlags(log.LstdFlags | log.Llongfile)
+	log.SetOutput(os.Stderr)
+	// log.SetFlags(log.LstdFlags | log.Llongfile)
+	log.SetFlags(log.Ltime | log.Ldate | log.LUTC | log.Lmicroseconds)
 
 	var engineFlag = flag.String("engine", "inmem", "Storage engine to use (inmem or bitcask)")
 	var dataDirFlag = flag.String("dataDir", "", "Directory for BitCask data files")
@@ -121,8 +123,6 @@ func main() {
 
 	kvs := zapstore.NewZapStore(storageEngine)
 
-	reader := bufio.NewReader(os.Stdin)
-	if err := runLoop(kvs, reader, os.Stdout); err != nil {
-		log.Fatal(err)
-	}
+	server.StartServer(kvs)
+
 }
